@@ -95,7 +95,6 @@
     I_matrix <- matrix(0, nrow = elements, ncol = elements)
 
     # Compute off-diagonals of information matrix
-    # Similar to the original Stata code which computes Fisher's Information
     for (col in 1:elements) {
       for (row in col:elements) {
         # Element-wise multiplication and taking mean
@@ -515,31 +514,4 @@ plot.pmstabilityss <- function(x, type = "instability", combined = TRUE, ...) {
   return(invisible(NULL))
 }
 
-# # Example usage:
-# Practical.3.data$sex_numeric <- ifelse(Practical.3.data$sex == "Male", 1, 0)
-#
-# # fit a logistic regression model including the 7 predictors
-# model <- glm(outcome ~ age + black + asian + sex + bmi + smoke + metact,
-#              data = Practical.3.data,
-#              family = binomial(link = "logit"))
-#
-#
-# # generate a variable of the linear predictor values for each patient
-# Practical.3.data$lp <- predict(model, type = "link")
-#
-#
-# result <- pmstabilityss(data = Practical.3.data,
-#         varlist = c("age", "black", "asian", "sex_numeric", "bmi", "smoke", "metact"),
-#                       prevalence = 0.2,
-#                       lp = "lp",
-#                       pciwidth = c(0.2),
-#                       pcutpoints = c(1))
 
-# # View overall results
-# print(result)
-#
-# # Plot instability plots
-# plot(result, type = "instability")
-#
-# # Access specific plots
-# result$plots$instability_plots[["384"]]  # Plot for N=100
