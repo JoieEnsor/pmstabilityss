@@ -46,7 +46,7 @@
                           logitpvarincrement = 0.001) {
 
     # Check for required packages
-    required_packages <- c("dplyr", "ggplot2", "gridExtra", "Matrix")
+    required_packages <- c("dplyr", "ggplot2", "patchwork", "Matrix")
 
     # Install missing packages
     for (pkg in required_packages) {
@@ -323,9 +323,9 @@
         geom_segment(aes(x = p_true, xend = p_true, y = lower, yend = upper),
                      color = color, alpha = 0.7) +
         geom_abline(slope = 1, intercept = 0, linetype = "solid") +
-        geom_smooth(aes(y = lower), method = "loess", se = FALSE,
+        geom_smooth(formula = y ~ x, aes(y = lower), method = "loess", se = FALSE,
                     linetype = "dashed", color = "black", span = 0.2) +
-        geom_smooth(aes(y = upper), method = "loess", se = FALSE,
+        geom_smooth(formula = y ~ x, aes(y = upper), method = "loess", se = FALSE,
                     linetype = "dashed", color = "black", span = 0.2) +
         annotate("text", x = 0.1, y = 0.9, label = paste("N =", num), hjust = 0) +
         labs(x = "True risk", y = "95% Uncertainty interval\nfor true risk") +
@@ -413,30 +413,64 @@
 
     # Display tables
 
+    
     # Generate combined plots if requested
     plot_output <- list()
-
+    
     if (!nodraw && !nocompare) {
       if (length(instability_plots) > 0) {
-        combined_instability <- suppressMessages(do.call(grid.arrange, c(instability_plots, ncol = min(3, length(instability_plots)))))
+        # Use patchwork to combine plots
+        if (!requireNamespace("patchwork", quietly = TRUE)) {
+          install.packages("patchwork")
+        }
+        library(patchwork)
+        
+        # Start with the first plot
+        combined_instability <- instability_plots[[1]]
+        
+        # Add the rest of the plots
+        if (length(instability_plots) > 1) {
+          for (i in 2:length(instability_plots)) {
+            combined_instability <- combined_instability + instability_plots[[i]]
+          }
+        }
+        
+        # Arrange in a grid
+        combined_instability <- combined_instability + 
+          plot_layout(ncol = min(3, length(instability_plots)))
+        
         plot_output$instability_plots <- instability_plots
         plot_output$combined_instability <- combined_instability
-
+        
         if (!is.null(dev.list())) {
           print(combined_instability)
         }
       }
-
+      
       if (threshold != 0 && length(classification_plots) > 0) {
-        combined_classification <- do.call(grid.arrange, c(classification_plots, ncol = min(3, length(classification_plots))))
+        # Start with the first plot
+        combined_classification <- classification_plots[[1]]
+        
+        # Add the rest of the plots
+        if (length(classification_plots) > 1) {
+          for (i in 2:length(classification_plots)) {
+            combined_classification <- combined_classification + classification_plots[[i]]
+          }
+        }
+        
+        # Arrange in a grid
+        combined_classification <- combined_classification + 
+          plot_layout(ncol = min(3, length(classification_plots)))
+        
         plot_output$classification_plots <- classification_plots
         plot_output$combined_classification <- combined_classification
-
+        
         if (!is.null(dev.list())) {
           print(combined_classification)
         }
       }
     }
+    
 
     # Prepare return object
     result <- list(
@@ -490,28 +524,72 @@ print.pmstabilityss <- function(x, ...) {
 #' @param ... Additional arguments
 #'
 #' @export
-plot.pmstabilityss <- function(x, type = "instability", combined = TRUE, ...) {
-  if (!requireNamespace("gridExtra", quietly = TRUE)) {
-    install.packages("gridExtra")
-    library(gridExtra)
-  }
 
+#' Plot method for pmstability objects
+#'
+#' @param x A pmstability object
+#' @param type Type of plot to display: "instability" or "classification"
+#' @param combined Whether to show combined plots (TRUE) or individual plots (FALSE)
+#' @param ... Additional arguments
+#'
+#' @export
+plot.pmstability <- function(x, type = "instability", combined = TRUE, ...) {
+  if (!requireNamespace("patchwork", quietly = TRUE)) {
+    install.packages("patchwork")
+  }
+  library(patchwork)
+  
   if (type == "instability") {
     if (combined && !is.null(x$plots$combined_instability)) {
       return(x$plots$combined_instability)
+    } else if (!is.null(x$plots$instability_plots) && combined) {
+      # Use patchwork to combine plots
+      plot_list <- x$plots$instability_plots
+      # Start with the first plot
+      if (length(plot_list) > 0) {
+        combined_plot <- plot_list[[1]]
+        # Add the rest of the plots
+        if (length(plot_list) > 1) {
+          for (i in 2:length(plot_list)) {
+            combined_plot <- combined_plot + plot_list[[i]]
+          }
+        }
+        # Arrange in a grid
+        combined_plot <- combined_plot + 
+          plot_layout(ncol = min(3, length(plot_list)))
+        
+        return(combined_plot)
+      }
     } else if (!is.null(x$plots$instability_plots)) {
       return(x$plots$instability_plots)
     }
   } else if (type == "classification") {
     if (combined && !is.null(x$plots$combined_classification)) {
       return(x$plots$combined_classification)
+    } else if (!is.null(x$plots$classification_plots) && combined) {
+      # Use patchwork to combine plots
+      plot_list <- x$plots$classification_plots
+      # Start with the first plot
+      if (length(plot_list) > 0) {
+        combined_plot <- plot_list[[1]]
+        # Add the rest of the plots
+        if (length(plot_list) > 1) {
+          for (i in 2:length(plot_list)) {
+            combined_plot <- combined_plot + plot_list[[i]]
+          }
+        }
+        # Arrange in a grid
+        combined_plot <- combined_plot + 
+          plot_layout(ncol = min(3, length(plot_list)))
+        
+        return(combined_plot)
+      }
     } else if (!is.null(x$plots$classification_plots)) {
       return(x$plots$classification_plots)
     }
   }
-
+  
   message("No plots of type '", type, "' available.")
   return(invisible(NULL))
 }
-
-
+                                               
