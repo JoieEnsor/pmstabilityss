@@ -533,7 +533,7 @@ print.pmstabilityss <- function(x, ...) {
 #' @param ... Additional arguments
 #'
 #' @export
-plot.pmstability <- function(x, type = "instability", combined = TRUE, ...) {
+plot.pmstabilityss <- function(x, type = "instability", combined = TRUE, ...) {
   if (!requireNamespace("patchwork", quietly = TRUE)) {
     install.packages("patchwork")
   }
