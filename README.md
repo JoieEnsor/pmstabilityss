@@ -20,10 +20,10 @@ When developing prediction models, it's crucial to have a sufficient sample size
 This package allows you to:
 
 1. Calculate uncertainty intervals for individual risk predictions at different sample sizes
-2. Visualize how prediction stability changes with increasing sample size
+2. Visualise how prediction stability changes with increasing sample size
 3. Determine the sample size needed to achieve target prediction interval widths
 4. Compare the uncertainty in classification decisions at different thresholds
-5. Analyze prediction stability across different subgroups
+5. Analyse prediction stability across different subgroups
 
 ## Usage
 
@@ -79,7 +79,7 @@ The function returns an object of class "pmstabilityss" containing:
 - **overall_stats**: Summary statistics of prediction interval widths for each sample size
 - **threshold_stats**: Summary of misclassification probabilities (if threshold specified)
 - **cuts_stats**: Summary by probability categories (if pciwidth specified)
-- **plots**: Visualizations of prediction stability and classification uncertainty
+- **plots**: Visualisations of prediction stability and classification uncertainty
 
 ## Citation
 
