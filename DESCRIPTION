@@ -1,16 +1,15 @@
 Package: pmstabilityss
-Type: Package
-Title: What the Package Does (Title Case)
 Version: 0.1.0
-Authors@R: c(
-    person(
-      "Jane", "Doe",
-      email = "jane@example.com",
-      role = c("aut", "cre")
-    )
-  )
-Description: More about what it does (maybe more than one line).
-    Continuation lines should be indented.
-License: What license is it under?
-Encoding: UTF-8
+Date: 2025-04-25
+Language: en-GB
+Title: Sample Size for Prediction Model Development Based on Prediction Uncertainty
+Authors@R: c(person("Joie", "Ensor", role = c("aut", "cre"), email = "j.ensor@bham.ac.uk"))
+Maintainer: Joie Ensor <j.ensor@bham.ac.uk>
+Depends: R (>= 2.1)
+Imports: graphics, pROC, utils
+Suggests: 
+Description: Computes the minimum sample size required for the development of a multivariable prediction model based on uncertainty of risk estimates 
+License: GPL (>= 3)
+RoxygenNote: 7.2.3
 LazyData: true
+Encoding: UTF-8
