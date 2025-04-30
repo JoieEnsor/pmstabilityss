@@ -43,12 +43,18 @@ result$overall_stats
 result$plots$instability_plots
 
 # Sample size needed to achieve specific prediction interval widths
-result2 <- pmstabilityss(data = your_data, 
+stability_ss <- pmstabilityss(data = your_data, 
                          varlist = c("var1", "var2", "var3"), 
                          prevalence = 0.3,
                          lp = "linear_predictor",
                          pcutpoints = c(0.3, 0.6, 1),   # Risk categories
                          pciwidth = c(0.1, 0.15, 0.2))  # Target widths for each category
+
+# Print results
+stability_ss$overall_stats
+
+# Plot prediction stability
+stability_ss$plots$instability_plots
 
 # Classification instability at threshold 0.5
 result3 <- pmstabilityss(data = your_data, 
