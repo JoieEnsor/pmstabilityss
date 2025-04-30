@@ -52,6 +52,7 @@ stability_ss <- pmstabilityss(data = your_data,
 
 # Print results
 stability_ss$overall_stats
+stability_ss$cuts_stats
 
 # Plot prediction stability
 stability_ss$plots$instability_plots
